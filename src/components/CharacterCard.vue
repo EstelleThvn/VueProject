@@ -1,16 +1,75 @@
 <template>
-  <div class="CharacterCard">
-    <h1>Hello Wooorld</h1>
+  <div class="character-card">
+    <h1>{{characterData.name}}</h1>
+    <div>
+      <p>Race: </p>
+      <p>{{characterData.race}}</p>
+    </div>
+    <div>
+      <p>Height: </p>
+      <p>{{characterData.height}}</p>
+    </div>
+    <div>
+      <p>Birth: </p>
+      <p>{{characterData.birth}}</p>
+    </div>
+    <div>
+      <p>Death: </p>
+      <p>{{characterData.death}}</p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'CharacterCard',
+  props: {
+      characterData: [],
+  }
 }
 </script>
 
 
 <style scoped>
+  .character-card {
+    background-color: #FEFEFF;
+    box-shadow: 0px 0px 32px rgba(100,104,140,.32);
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 64px;
+    /*margin: 40px;*/
+  }
 
+  .character-card > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .character-card > div p:first-child{
+    color: #9F9FAA;
+  }
+  .character-card > div p:last-child{
+    text-align: right;
+  }
+
+  h1{
+    text-align: center;
+    margin-bottom: 16px;
+    text-transform: capitalize;
+  }
+
+
+/* ------------- */
+/* MEDIA QUERIES */
+/* ------------- */
+  @media (max-width: 575.98px) {
+    .character-card {
+      padding: 24px 40px;
+    }
+}
 </style>

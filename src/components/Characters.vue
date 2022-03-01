@@ -1,5 +1,5 @@
 <template>
-  <div class="Characters">
+  <div class="Characters" id="game">
     <CharacterCard />
   </div>
 </template>
