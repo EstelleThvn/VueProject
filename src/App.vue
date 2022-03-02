@@ -43,7 +43,7 @@ h1 {
   font-family: "Aniron Bold", sans-serif;
   font-weight: 400;
   font-size: 2.5rem;
-  line-height: 4rem;
+  line-height: 3.5rem;
 }
 p{
   line-height: 1.75rem;
@@ -57,13 +57,14 @@ p{
 @media (max-width: 767.98px) {
   h1 {
     font-size: 2.25rem;
-    line-height: 3.5rem;
+    line-height: 3.25rem;
   }
 }
 
 @media (max-width: 575.98px) {
   h1 {
     font-size: 2rem;
+    line-height: 3rem;
   }
 }
 </style>
