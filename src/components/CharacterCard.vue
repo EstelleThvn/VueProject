@@ -32,7 +32,7 @@ export default {
 
 <style scoped>
   .character-card {
-    background-color: #FEFEFF;
+    background-color: var(--light-color);;
     box-shadow: 0px 0px 32px rgba(100,104,140,.32);
     width: 100%;
     max-width: 440px;
@@ -52,9 +52,13 @@ export default {
 
   .character-card > div p:first-child{
     color: #9F9FAA;
+    margin-right: 16px;
   }
   .character-card > div p:last-child{
     text-align: right;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    white-space: nowrap;
   }
 
   h1{

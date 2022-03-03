@@ -23,7 +23,7 @@
     }
 
     .button > div {
-        background-color: #953B54;
+        background-color: var(--secondary-color);
         padding: 4px 36px;
         transition: 0.2s ease;
     }
@@ -32,11 +32,12 @@
         font-size: 1.125rem;
         transform: translateY(-2px);
         text-transform:lowercase;
-        color: #fefeff;
+        color: var(--light-color);
+        white-space: nowrap;
     }
 
     .button:hover div {
-        background-color: #EA823B;
+        background-color: var(--tertiary-color);
         cursor:pointer;
     }
 </style>

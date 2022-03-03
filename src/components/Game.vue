@@ -3,26 +3,31 @@
         <div class="filter-movies">
             <div><p>Quotes from movie:</p></div>
             <div>
-                <div class="choice-movie"><p>1</p></div>
-                <div class="choice-movie"><p>2</p></div>
-                <div class="choice-movie"><p>3</p></div>
-                <div class="choice-movie"><p>All</p></div>
+                <div class="choice-movie" value="1"><p>1</p></div>
+                <div class="choice-movie" value="2"><p>2</p></div>
+                <div class="choice-movie" value="3"><p>3</p></div>
+                <div class="choice-movie" value="All"><p>All</p></div>
+
+                <!--<select v-model="moviesFilter">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="All">All</option>
+                </select>-->
             </div>
         </div>
 
-        <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
+        <div class="quote-infos-container">
+            <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
-
-        <div v-if="!showAnswer" class="choices" ref="choicesContainer">
-                <Choice ref="choice" v-for="character in allChosenCharacters" :key="character._id" @click.native="revealAnswer(character._id, $event)" :characterName="character.name"/>
-        </div>
-        <div v-else class="answer">
-            <CharacterCard :characterData="chosenCharacter" />
-            <div>
+            <div v-if="!showAnswer" class="choices" ref="choicesContainer">
+                    <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="character._id" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
+            </div>
+            <div v-else class="answer">
+                <CharacterCard :characterData="chosenCharacter" />
                 <Button @click.native="nextQuote" text="next quote" class="next-btn" />
             </div>
         </div>
-
     </div>
 </template>
 
@@ -51,6 +56,8 @@ export default {
             allChosenCharacters: [],
 
             showAnswer: false,
+
+            //moviesFilter: "All",
         }
     },
     created: function() {
@@ -122,28 +129,24 @@ export default {
                 this.allChosenCharacters = this.allChosenCharacters.sort(() => 0.5 - Math.random());
                 console.log(this.allChosenCharacters)
             },
-            revealAnswer(id, event){
+            revealAnswer(id, index){
                 this.$refs.choicesContainer.style.pointerEvents = "none";
+
                 if(id == this.chosenCharacter._id) {
-                    // console.log("gg!")
-                    event.target.parentNode.classList.add("winner")
+                    this.$refs.choice[index].$el.classList.add("winner")
                 }
                 else {
-                    // console.log("too bad")
-                    event.target.parentNode.classList.add("looser")
+                    this.$refs.choice[index].$el.classList.add("looser")
+
                     //give the correct answer the winner class
-                    this.$refs.choice.forEach(el => {
-                        if(el.characterName == this.chosenCharacter.name){
-                            el.$el.classList.add("winner")
-                        }
-                    })
+                    this.$refs.choice.find(el => el.characterId == this.chosenCharacter._id).$el.classList.add("winner")
                 }
 
                 setTimeout(()=>{
                     console.log('hide choices and show info on character')
                     this.showAnswer=true
                     this.$refs.choicesContainer.style.pointerEvents = "unset";
-                },2000);
+                },1500);
             },
             initChoices(){
                 this.showAnswer = false
@@ -167,6 +170,12 @@ export default {
     width: 100%;
     min-height: 100vh;
     padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+.quote-infos-container {
+    padding-top: 40px;
+    flex-grow: 1;
 }
 
 .answer {
@@ -179,9 +188,9 @@ export default {
 }
 
 .quote {
-    color: #EA823B;
+    color: var(--tertiary-color);
     text-align: center;
-    margin-top: 40px;
+    
     margin-bottom: 64px;
     font-size: 1.5rem;
 }
@@ -214,6 +223,15 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow: hidden;
+    padding: 0 80px;
+}
+
+.choices .choice-card:first-child {
+    margin-top: 0;
+}
+.choices .choice-card:last-child {
+    margin-bottom: 0;
 }
 
 /* ------------- */
@@ -222,6 +240,13 @@ export default {
 @media (max-width: 767.98px) {
     .quote {
         font-size: 1.25rem;
+        margin-bottom: 40px;
+    }
+    #game{
+        padding: 32px;
+    }
+    .choices {
+        padding: 0 56px;
     }
 }
 @media (max-width: 575.98px) {
@@ -235,6 +260,14 @@ export default {
     .filter-movies>div:last-child {
         margin-top: 8px;
         justify-content: center;
+    }
+    
+    .choices {
+        padding: 0;
+    }
+
+    .answer .next-btn {
+        margin-top: 48px;
     }
 }
 </style>

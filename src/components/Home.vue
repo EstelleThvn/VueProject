@@ -52,8 +52,8 @@ export default {
     .homepage {
         width:100%;
         height: 100vh;
-        background-color: #12172C;
-        color: #FEFEFF;
+        background-color: var(--dark-color);
+        color: var(--light-color);
     }
     h1 {
         margin-bottom: 12px;
@@ -91,7 +91,7 @@ export default {
         position: absolute;
         width: 100%;
         height:100%;
-        border: 40px solid #12172C;
+        border: 40px solid var(--dark-color);
     }
 
 

@@ -28,19 +28,29 @@ export default {
  src: url("./assets/fonts/aniron/anirb___.ttf") format("truetype");
 }
 
+:root {
+  --dark-color: #12172C;
+  --light-color: #FEFEFF;
+  --primary-color: #64688C;
+  --secondary-color: #953B54;
+  --tertiary-color: #EA823B;
+  --text-font: noto-sans, sans-serif;
+  --title-font: "Aniron Bold", sans-serif;
+}
+
 #app {
-  font-family: noto-sans, sans-serif;
+  font-family: var(--text-font);
   font-weight: 400;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #132443;
-  background-color: #FEFEFF;
+  color: var(--dark-color);
+  background-color: var(--light-color);
   font-size: 1.25rem;
 }
 
 h1 {
-  font-family: "Aniron Bold", sans-serif;
+  font-family: var(--title-font);
   font-weight: 400;
   font-size: 2.5rem;
   line-height: 3.5rem;
