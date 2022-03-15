@@ -29,15 +29,15 @@
             <p>One movie quote from The Lord of the Ring, and only one answer.</p>
             <p>Guess which character said it!</p>
 
-            <a href="#game">
+            <router-link to="/game">
                 <Button text="play" class="btn-play" />
-            </a>
+            </router-link>
         </div>
     </div>
 </template>
 
 <script>
-import Button from './Button.vue'
+import Button from '@/components/Button.vue'
 
 export default {
   name: 'Home',

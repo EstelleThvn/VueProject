@@ -1,20 +1,19 @@
 <template>
   <div id="app">
-    <Home />
-    <Game />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Home from '@/components/Home.vue'
-import Game from '@/components/Game.vue'
+// import Home from '@/components/Home.vue'
+// import Game from '@/components/Game.vue'
 
 export default {
   name: 'App',
-  components: {
-    Game,
-    Home,
-  },
+  // components: {
+  //   Game,
+  //   Home,
+  // },
 }
 </script>
 

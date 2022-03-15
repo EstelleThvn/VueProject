@@ -20,8 +20,8 @@
         <div class="quote-infos-container">
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
-            <div v-if="!showAnswer" class="choices" ref="choicesContainer">
-                    <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="character._id" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
+            <div v-if="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked}">
+                <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="character._id" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
             </div>
             <div v-else class="answer">
                 <CharacterCard :characterData="chosenCharacter" />
@@ -45,6 +45,17 @@ export default {
         Button,
         Choice,
     },
+    computed: {
+		quotesFilteredData: function() {
+            //if the quote is too short or too long or if the character associated to the quote is a minor character
+            let data = this.allQuotesData.docs.filter((quote) => quote.dialog.length>10 && quote.dialog.length<100 && quote.character != "5cdbe49b7ed9587226e794a0")
+			return data
+		},
+        // charactersFilteredData: function() {
+        //     let data = this.allCharactersData.docs.filter((character) => character.name == "MINOR_CHARACTER")
+		// 	return data
+		// }
+	},
     data() {
         return {
             allQuotesData: [],
@@ -56,6 +67,7 @@ export default {
             allChosenCharacters: [],
 
             showAnswer: false,
+            playerClicked: false,
 
             //moviesFilter: "All",
         }
@@ -67,10 +79,11 @@ export default {
 			async retrieveAllQuotes() {
                 this.allQuotesData = await getAllQuotes()
                 console.log(this.allQuotesData)
+                // console.log('quotesfiltereddata', this.quotesFilteredData)
 			},
             async retrieveAllCharacters() {
                 this.allCharactersData = await getAllCharacters()
-                console.log(this.allCharactersData)
+                // console.log(this.allCharactersData)
 			},
             async retrieveAllData() {
                 await this.retrieveAllQuotes()
@@ -89,13 +102,8 @@ export default {
             },
             //chooses one quote from all the possible quotes
             chooseQuote() {
-                let possiblyChosenQuote = this.allQuotesData.docs[Math.floor(Math.random() * this.allQuotesData.docs.length)]
-                let possiblyChosenQuoteChar = this.allCharactersData.docs.find(character => character._id === possiblyChosenQuote.character)
-                //if the quote is too long or too short or if the character is a minor Character, we choose another one
-                while(possiblyChosenQuote.dialog.length<20 || possiblyChosenQuote.dialog.length>100 || possiblyChosenQuoteChar.name == "MINOR_CHARACTER"){
-                    possiblyChosenQuote = this.allQuotesData.docs[Math.floor(Math.random() * this.allQuotesData.docs.length)]
-                    possiblyChosenQuoteChar = this.allCharactersData.docs.find(character => character._id === possiblyChosenQuote.character)
-                }
+                // console.log('filtered data', this.quotesFilteredData)
+                let possiblyChosenQuote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
 
                 this.chosenQuote = possiblyChosenQuote
                 console.log(this.chosenQuote)
@@ -112,7 +120,7 @@ export default {
                     let character = this.allCharactersData.docs.find(character => character._id === quote.character)
 
                     //if the character was already chosen or if it is a minor character we chose another one
-                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id) || character.name == "MINOR_CHARACTER") {
+                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id) || character.name === "MINOR_CHARACTER") {
                         quote = this.allQuotesData.docs[Math.floor(Math.random() * this.allQuotesData.docs.length)]
                         character = this.allCharactersData.docs.find(character => character._id === quote.character)
                     }
@@ -130,7 +138,7 @@ export default {
                 console.log(this.allChosenCharacters)
             },
             revealAnswer(id, index){
-                this.$refs.choicesContainer.style.pointerEvents = "none";
+                this.playerClicked = true
 
                 if(id == this.chosenCharacter._id) {
                     this.$refs.choice[index].$el.classList.add("winner")
@@ -143,15 +151,24 @@ export default {
                 }
 
                 setTimeout(()=>{
-                    console.log('hide choices and show info on character')
+                    this.$refs.choice.forEach(el => {
+                        el.$el.style.transform="translateX(80px)"
+                        el.$el.style.opacity="0"
+                        // console.log(el)
+                    })
+                    // this.$refs.choicesContainer.style.transform="translateX(80px)"
+                },1100);
+
+                setTimeout(()=>{
+                    console.log('hide choices and show info character')
                     this.showAnswer=true
-                    this.$refs.choicesContainer.style.pointerEvents = "unset";
+                    this.playerClicked = false
                 },1500);
             },
             initChoices(){
                 this.showAnswer = false
                 //re initialize style of the choices
-                // this.$refs.choicesContainer.style.pointerEvents = "unset";
+                this.playerClicked = false
                 this.$refs.choice.forEach(el => {
                     el.$el.classList.remove('winner')
                     el.$el.classList.remove('looser')
@@ -225,6 +242,10 @@ export default {
     align-items: center;
     overflow: hidden;
     padding: 0 80px;
+    transition: 0.2s ease;
+}
+.unselectableChoices {
+    pointer-events: none;
 }
 
 .choices .choice-card:first-child {
