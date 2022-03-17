@@ -47,7 +47,7 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin: 8px 0;
+    margin: 6px 0;
   }
 
   .character-card > div p:first-child{

@@ -51,8 +51,8 @@ export default {
 h1 {
   font-family: var(--title-font);
   font-weight: 400;
-  font-size: 2.5rem;
-  line-height: 3.5rem;
+  font-size: 2.25rem;
+  line-height: 3.25rem;
 }
 p{
   line-height: 1.75rem;
