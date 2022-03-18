@@ -32,7 +32,7 @@ export default {
 
 <style scoped>
   .character-card {
-    background-color: var(--light-color);;
+    background-color: var(--light-color);
     box-shadow: 0px 0px 32px rgba(100,104,140,.32);
     width: 100%;
     max-width: 440px;
@@ -65,6 +65,8 @@ export default {
     text-align: center;
     margin-bottom: 16px;
     text-transform: capitalize;
+    font-size: 2.25rem;
+    line-height: 3.25rem;
   }
 
 
@@ -74,6 +76,10 @@ export default {
   @media (max-width: 575.98px) {
     .character-card {
       padding: 24px 40px;
+    }
+    h1 {
+        font-size: 2rem;
+        line-height: 3rem;
     }
 }
 </style>

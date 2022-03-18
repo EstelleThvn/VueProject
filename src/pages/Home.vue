@@ -26,7 +26,7 @@
         
         <div class="text">
             <h1>Who said it?</h1>
-            <p>One movie quote from The Lord of the Ring, and only one answer.</p>
+            <p>One movie quote from The Lord of the Ring, and only one correct answer.</p>
             <p>Guess which character said it!</p>
 
             <router-link to="/game">

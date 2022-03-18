@@ -63,6 +63,7 @@ export default {
   /*display: none;*/
   opacity:0;
   transition: 0.2s ease;
+  pointer-events: none;
 }
 .winner::before {
   background-image: url("../assets/images/check-mark.svg");

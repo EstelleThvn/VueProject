@@ -1,23 +1,27 @@
 <template>
     <div id="game">
-        <div class="filter-movies">
-            <div><p>Quotes from movie:</p></div>
-            <div>
-                <!--<div class="choice-movie" value="1"><p>1</p></div>
-                <div class="choice-movie" value="2"><p>2</p></div>
-                <div class="choice-movie" value="3"><p>3</p></div>
-                <div class="choice-movie" value="All"><p>All</p></div>-->
-
-                <select v-model="moviesFilter" @change="newQuoteParty">
-                    <option value="5cd95395de30eff6ebccde5c">1</option>
-                    <option value="5cd95395de30eff6ebccde5b">2</option>
-                    <option value="5cd95395de30eff6ebccde5d">3</option>
-                    <option value="0">All</option>
-                </select>
-            </div>
-        </div>
+        <Header :moviesFilter.sync="moviesFilter" v-on:updateMoviesFilter="newQuoteParty"/>
 
         <div class="quote-infos-container">
+
+            <!--<div class="filter-movies">
+                <div><p>Quotes from movie:</p></div>
+                <div>
+                    <div class="choice-movie" value="1"><p>1</p></div>
+                    <div class="choice-movie" value="2"><p>2</p></div>
+                    <div class="choice-movie" value="3"><p>3</p></div>
+                    <div class="choice-movie" value="All"><p>All</p></div>
+
+                    <select v-model="moviesFilter" @change="newQuoteParty">
+                        <option value="5cd95395de30eff6ebccde5c">1</option>
+                        <option value="5cd95395de30eff6ebccde5b">2</option>
+                        <option value="5cd95395de30eff6ebccde5d">3</option>
+                        <option value="0">All</option>
+                    </select>
+                </div>
+            </div>-->
+
+        
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
             <div v-show="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked, visible:toggleAnimChoices, invisible:!toggleAnimChoices}">
@@ -27,7 +31,14 @@
                 <CharacterCard :characterData="chosenCharacter" />
                 <Button @click.native="nextQuote" text="next quote" class="next-btn" />
             </div>
+
+            <div>
+                <p>Current score : {{currentScore}}</p>
+                <p>Highest score : {{highestScore}}</p>
+            </div>
         </div>
+
+        <Footer />
     </div>
 </template>
 
@@ -35,6 +46,8 @@
 import CharacterCard from '@/components/CharacterCard.vue'
 import Choice from '@/components/Choice.vue'
 import Button from '@/components/Button.vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
 
 import {getAllCharacters, getAllQuotes} from '@/services/api/api.js'
 // console.log(getMovies())
@@ -44,16 +57,22 @@ export default {
         CharacterCard,
         Button,
         Choice,
+        Header,
+        Footer,
     },
     computed: {
 		quotesFilteredData: function() {
             let data = this.filterByMovieId(this.filterByQuoteLength(this.filterOutMinorCharacterQuotes(this.allQuotesData.docs)), this.moviesFilter)
 			return data
 		},
-        // charactersFilteredData: function() {
-        //     let data = this.allCharactersData.docs.filter((character) => character.name == "MINOR_CHARACTER")
-		// 	return data
-		// }
+	},
+    watch: {
+		currentScore: function(newCurrentScore) {
+			localStorage.setItem("currentScore", newCurrentScore)
+		},
+        highestScore: function(newHighestScore) {
+			localStorage.setItem("highestScore", newHighestScore)
+		},
 	},
     data() {
         return {
@@ -74,7 +93,11 @@ export default {
             toggleAnimAnswer: false, //true : appearing, false: disappearing
 
             //filters
-            moviesFilter: "0",
+            moviesFilter: localStorage.getItem("moviesFilter") || "0", //0 -> All movies
+
+            //scores
+            currentScore: Number(localStorage.getItem("currentScore")) || 0,
+            highestScore: Number(localStorage.getItem("highestScore")) || 0,
         }
     },
     created: function() {
@@ -163,14 +186,19 @@ export default {
                 // console.log(index)
                 // console.log(id, this.chosenCharacter._id)
                 // console.log(this.$refs.choice)
-                if(id == this.chosenCharacter._id) {
+                if(id == this.chosenCharacter._id) {//the player has won
                     this.$refs.choice[index].$el.classList.add("winner")
+
+                    this.updateScores(true)
+                    
                 }
-                else {
+                else {//the player has lost
                     this.$refs.choice[index].$el.classList.add("looser")
 
                     //give the correct answer the winner class
                     this.$refs.choice.find(el => el.characterId == this.chosenCharacter._id).$el.classList.add("winner")
+
+                    this.updateScores(false)
                 }
 
                 setTimeout(()=>{
@@ -183,6 +211,17 @@ export default {
                     setTimeout(()=>{this.toggleAnimAnswer=true},200);
                 },1300);
             },
+            updateScores(playerHasWon){//true : won , false : lost
+                if(playerHasWon){
+                    if(this.highestScore==this.currentScore){
+                        this.highestScore++
+                    }
+                    this.currentScore++
+                }
+                else {
+                    this.currentScore = 0
+                }
+            },
             initChoices(){
                 this.showAnswer = false
                 //re initialize style of the choices
@@ -193,9 +232,9 @@ export default {
                 })
                 this.toggleAnimAnswer=false
 
-                // setTimeout(()=>{
+                setTimeout(()=>{
                     this.toggleAnimChoices=true
-                // },200);
+                },200);
                 
             },
             nextQuote(){
@@ -203,7 +242,7 @@ export default {
                 setTimeout(()=>{
                     this.initChoices()
                     this.chooseQuoteAndCharacters()
-                },500);
+                },300);
             }, 
             newQuoteParty(){
                 this.chosenQuote= []
@@ -213,6 +252,7 @@ export default {
 
                 this.initChoices()
                 this.chooseQuoteAndCharacters()
+                console.log(this.moviesFilter)
             }
 	},
 }
@@ -221,15 +261,15 @@ export default {
 <style scoped>
 #game{
     width: 100%;
-    min-height: 100vh;
-    padding: 40px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 .quote-infos-container {
-    padding-top: 40px;
+    padding: 40px;
+    padding-top: 72px;
     flex-grow: 1;
+    min-height: 100vh;
 }
 
 .answer {
@@ -244,9 +284,9 @@ export default {
 .quote {
     color: var(--tertiary-color);
     text-align: center;
-    
     margin-bottom: 64px;
     font-size: 1.5rem;
+    margin-top: 6vh;
 }
 
 
@@ -311,8 +351,9 @@ export default {
         font-size: 1.25rem;
         margin-bottom: 40px;
     }
-    #game{
+    .quote-infos-container{
         padding: 32px;
+        padding-top: 64px;
     }
     .choices {
         padding: 0 56px;

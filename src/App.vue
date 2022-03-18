@@ -37,6 +37,21 @@ export default {
   --title-font: "Aniron Bold", sans-serif;
 }
 
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--light-color);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dark-color);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
 #app {
   font-family: var(--text-font);
   font-weight: 400;
@@ -51,8 +66,8 @@ export default {
 h1 {
   font-family: var(--title-font);
   font-weight: 400;
-  font-size: 2.25rem;
-  line-height: 3.25rem;
+  font-size: 2.5rem;
+  line-height: 3.5rem;
 }
 p{
   line-height: 1.75rem;
