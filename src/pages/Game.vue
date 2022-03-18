@@ -20,8 +20,8 @@
         <div class="quote-infos-container">
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
-            <div v-if="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked, visible:toggleAnimChoices, invisible:!toggleAnimChoices}">
-                <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="character._id" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
+            <div v-show="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked, visible:toggleAnimChoices, invisible:!toggleAnimChoices}">
+                <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="index" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
             </div>
             <div v-if="showAnswer" class="answer" v-bind:class="{visible:toggleAnimAnswer, invisible:!toggleAnimAnswer}">
                 <CharacterCard :characterData="chosenCharacter" />
@@ -47,8 +47,6 @@ export default {
     },
     computed: {
 		quotesFilteredData: function() {
-            //filter out the quotes that are too short, too long, or if the character associated to the quote is a minor character
-            // let data = this.allQuotesData.docs.filter((quote) => quote.dialog.length>10 && quote.dialog.length<100 && quote.character != "5cdbe49b7ed9587226e794a0")
             let data = this.filterByMovieId(this.filterByQuoteLength(this.filterOutMinorCharacterQuotes(this.allQuotesData.docs)), this.moviesFilter)
 			return data
 		},
@@ -92,6 +90,7 @@ export default {
                 return quotes.filter((quote) => quote.dialog.length>20 && quote.dialog.length<100)
             },
             filterByMovieId: function(quotes, movieId){
+                // if movieId =  0 we don't filter the data
                 return (movieId == 0 ? quotes : quotes.filter((quote) => quote.movie == movieId))
             },
 			async retrieveAllQuotes() {
@@ -103,10 +102,6 @@ export default {
                 this.allCharactersData = await getAllCharacters()
                 // console.log(this.allCharactersData)
 			},
-            // async retrieveAllMovies() {
-            //     this.allCharactersData = await getMovies()
-            //     console.log(getMovies())
-			// },
             async retrieveAllData() {
                 await this.retrieveAllQuotes()
                 await this.retrieveAllCharacters()
@@ -150,18 +145,24 @@ export default {
                     this.OtherRandomCharacters.push(character);
                 }
                 
-                console.log(this.OtherRandomCharacters)
+                // console.log('not shuffled characters', this.OtherRandomCharacters)
             },
             shuffleAllChosenCharacters(){
+                this.allChosenCharacters = [];
                 this.allChosenCharacters = this.OtherRandomCharacters
+                // for(let i=0; i<this.OtherRandomCharacters.length; i++){
+                //     this.allChosenCharacters.push(this.OtherRandomCharacters[i])
+                // }
                 this.allChosenCharacters.push(this.chosenCharacter)
                 //change the order of the choices
-                this.allChosenCharacters = this.allChosenCharacters.sort(() => 0.5 - Math.random());
-                console.log(this.allChosenCharacters)
+                this.allChosenCharacters.sort(() => 0.5 - Math.random());
+                // console.log('shuffled', this.allChosenCharacters)
             },
             revealAnswer(id, index){
                 this.playerClicked = true
-
+                // console.log(index)
+                // console.log(id, this.chosenCharacter._id)
+                // console.log(this.$refs.choice)
                 if(id == this.chosenCharacter._id) {
                     this.$refs.choice[index].$el.classList.add("winner")
                 }
@@ -190,8 +191,12 @@ export default {
                     el.$el.classList.remove('winner')
                     el.$el.classList.remove('looser')
                 })
+                this.toggleAnimAnswer=false
+
+                // setTimeout(()=>{
+                    this.toggleAnimChoices=true
+                // },200);
                 
-                this.toggleAnimChoices=true
             },
             nextQuote(){
                 this.toggleAnimAnswer=false
