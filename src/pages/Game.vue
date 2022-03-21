@@ -1,40 +1,23 @@
 <template>
     <div id="game">
-        <Header :moviesFilter.sync="moviesFilter" v-on:updateMoviesFilter="newQuoteParty"/>
+        <Header :moviesFilter.sync="moviesFilter" v-on:newQuoteParty="newQuoteParty"/>
 
         <div class="quote-infos-container">
-
-            <!--<div class="filter-movies">
-                <div><p>Quotes from movie:</p></div>
-                <div>
-                    <div class="choice-movie" value="1"><p>1</p></div>
-                    <div class="choice-movie" value="2"><p>2</p></div>
-                    <div class="choice-movie" value="3"><p>3</p></div>
-                    <div class="choice-movie" value="All"><p>All</p></div>
-
-                    <select v-model="moviesFilter" @change="newQuoteParty">
-                        <option value="5cd95395de30eff6ebccde5c">1</option>
-                        <option value="5cd95395de30eff6ebccde5b">2</option>
-                        <option value="5cd95395de30eff6ebccde5d">3</option>
-                        <option value="0">All</option>
-                    </select>
-                </div>
-            </div>-->
-
         
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
             <div v-show="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked, visible:toggleAnimChoices, invisible:!toggleAnimChoices}">
                 <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="index" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
             </div>
+            <!-- use of v-if instead of v-show for the answer so that we can't see the name of the correct character in the code before answering -->
             <div v-if="showAnswer" class="answer" v-bind:class="{visible:toggleAnimAnswer, invisible:!toggleAnimAnswer}">
                 <CharacterCard :characterData="chosenCharacter" />
                 <Button @click.native="nextQuote" text="next quote" class="next-btn" />
             </div>
 
-            <div>
-                <p>Current score : {{currentScore}}</p>
-                <p>Highest score : {{highestScore}}</p>
+            <div class="scores">
+                <div><img src="../assets/images/current-score.svg"><p>{{currentScore}}</p></div>
+                <div><img src="../assets/images/highest-score.svg"><p>{{highestScore}}</p></div>
             </div>
         </div>
 
@@ -154,20 +137,20 @@ export default {
                 console.log(this.chosenCharacter)
             },
             chooseRandomCharacters(numberCharacters) {
+                console.log("filtered quotes",this.quotesFilteredData)
                 this.OtherRandomCharacters = [];
                 for(let i=0; i< numberCharacters; i++){ 
-                    let quote = this.allQuotesData.docs[Math.floor(Math.random() * this.allQuotesData.docs.length)]
+                    let quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
                     let character = this.allCharactersData.docs.find(character => character._id === quote.character)
 
                     //if the character was already chosen or if it is a minor character we chose another one
-                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id) || character.name === "MINOR_CHARACTER") {
+                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id) || character.name == "MINOR_CHARACTER") {
                         quote = this.allQuotesData.docs[Math.floor(Math.random() * this.allQuotesData.docs.length)]
                         character = this.allCharactersData.docs.find(character => character._id === quote.character)
                     }
 
                     this.OtherRandomCharacters.push(character);
                 }
-                
                 // console.log('not shuffled characters', this.OtherRandomCharacters)
             },
             shuffleAllChosenCharacters(){
@@ -270,47 +253,76 @@ export default {
     padding-top: 72px;
     flex-grow: 1;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.quote {
+    color: var(--tertiary-color);
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    margin-top: 6vh;
+}
+
+.scores {
+    width: fit-content;
+    background-color: var(--light-color);
+    box-shadow: 0px 0px 32px rgb(100 104 140 / 32%);
+    padding: 8px 12px;
+    width: 100%;
+    max-width: 144px;
+    position: relative;
+}
+.scores div > p {
+    color: var(--secondary-color);
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+.scores div {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    justify-content: space-between;
+}
+.scores > div:before {
+    padding: 2px 8px;
+    background-color: var(--primary-color);
+    font-size: 0.75rem;
+    position: absolute;
+    color: var(--light-color);
+    left: calc(100% + 8px);
+    opacity: 0;
+    transition: 0.2s ease;
+    width: fit-content;
+    pointer-events: none;
+}
+.scores > div:first-child:before {
+    content: "Current score"; 
+}
+.scores > div:last-child:before {
+    content: "Highest score"; 
+}
+.scores:hover > div:before {
+    opacity: 0.87;
+}
+.scores img {
+    height: 32px;
+    width: 40px;
+}
+.scores p {
+    margin-left: 16px;
 }
 
 .answer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top:32px;
 }
 .answer .next-btn {
     margin-top: 56px;
-}
-
-.quote {
-    color: var(--tertiary-color);
-    text-align: center;
-    margin-bottom: 64px;
-    font-size: 1.5rem;
-    margin-top: 6vh;
-}
-
-
-.filter-movies {
-    display:flex;
-    justify-content: flex-end;
-}
-.filter-movies > div:first-child {
-    color: #9F9FAA;
-    margin-right: 40px;
-}
-.filter-movies > div:last-child {
-    display: flex;
-}
-.filter-movies .choice-movie {
-    padding: 0px 12px;
-    margin: 0px 8px;
-    transition:0.2s ease;
-    height: fit-content;
-}
-.filter-movies .choice-movie:hover {
-    background-color: rgba(100, 104, 140,0.24);
-    /*color: #fefeff;*/
-    cursor: pointer;
 }
 
 .choices {
@@ -346,10 +358,15 @@ export default {
 /* ------------- */
 /* MEDIA QUERIES */
 /* ------------- */
+@media (max-width: 991.98px) {
+    .scores {
+        margin-top:24px;
+    }
+}
 @media (max-width: 767.98px) {
     .quote {
         font-size: 1.25rem;
-        margin-bottom: 40px;
+        margin-bottom: 16px;
     }
     .quote-infos-container{
         padding: 32px;
@@ -358,26 +375,24 @@ export default {
     .choices {
         padding: 0 56px;
     }
+    .scores {
+        margin-top:32px;
+    }
 }
 @media (max-width: 575.98px) {
-    .filter-movies {
-        flex-direction: column;
-    }
-    .filter-movies > div:first-child {
-        text-align: center;
-        margin-right: 0px;
-    }
-    .filter-movies>div:last-child {
-        margin-top: 8px;
-        justify-content: center;
-    }
-    
     .choices {
         padding: 0;
     }
 
     .answer .next-btn {
         margin-top: 48px;
+    }
+
+    .scores {
+        align-self: center;
+    }
+    .scores > div:before {
+        display: none;
     }
 }
 </style>

@@ -28,13 +28,14 @@
     watch: {
 		moviesFilter: function(newMoviesFilter) {
 			localStorage.setItem("moviesFilter", newMoviesFilter)
-            console.log('CHANGE STORAGE MOVIEFILTER')
+            console.log('CHANGE STORAGE MOVIEFILTER', newMoviesFilter)
 		},
 	},
     methods: {
 		onMoviesFilterChanged(event) {
-			this.$emit('update:MoviesFilter', event.target.value) 
-            this.$emit('updateMoviesFilter', event.target.value) 
+            console.log(event.target.value)
+			this.$emit("update:moviesFilter", event.target.value) 
+            this.$emit("newQuoteParty", event.target.value) 
 		},
 	}
     }

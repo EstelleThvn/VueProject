@@ -36,6 +36,9 @@
     .home-btn p {
         margin-right: 16px;
     }
+    .home-btn img {
+        height: 48px;
+    }
     footer > p {
         opacity: 0.6;
         padding-right: 56px;
