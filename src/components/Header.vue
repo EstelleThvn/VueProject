@@ -5,39 +5,21 @@
             <p>Home</p>
         </router-link>
 
-        <div class="filter-movies">
-            <div><p>Quotes from movie:</p></div>
-            <div>
-                <select :value="moviesFilter" @input="onMoviesFilterChanged">
-                    <option value="5cd95395de30eff6ebccde5c">1</option>
-                    <option value="5cd95395de30eff6ebccde5b">2</option>
-                    <option value="5cd95395de30eff6ebccde5d">3</option>
-                    <option value="0">All</option>
-                </select>
-            </div>
-        </div>
+        <MoviesFilter v-bind="$props" v-on="$listeners" />
     </header>
 </template>
 
 <script>
+    import MoviesFilter from '@/components/MoviesFilter.vue'
+
     export default {
     name: 'Header',
     props: {
         moviesFilter: String,
     },
-    watch: {
-		moviesFilter: function(newMoviesFilter) {
-			localStorage.setItem("moviesFilter", newMoviesFilter)
-            console.log('CHANGE STORAGE MOVIEFILTER', newMoviesFilter)
-		},
-	},
-    methods: {
-		onMoviesFilterChanged(event) {
-            console.log(event.target.value)
-			this.$emit("update:moviesFilter", event.target.value) 
-            this.$emit("newQuoteParty", event.target.value) 
-		},
-	}
+    components: {
+        MoviesFilter,
+    },
     }
 </script>
 

@@ -1,9 +1,9 @@
 <template>
     <div id="game">
-        <Header :moviesFilter.sync="moviesFilter" v-on:newQuoteParty="newQuoteParty"/>
+        <Header :moviesFilter.sync="moviesFilter" v-on:moviesFilterChange="newQuotePartyOnMoviesFilterChange"/>
 
         <div class="quote-infos-container">
-        
+
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
             <div v-show="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked, visible:toggleAnimChoices, invisible:!toggleAnimChoices}">
@@ -12,13 +12,10 @@
             <!-- use of v-if instead of v-show for the answer so that we can't see the name of the correct character in the code before answering -->
             <div v-if="showAnswer" class="answer" v-bind:class="{visible:toggleAnimAnswer, invisible:!toggleAnimAnswer}">
                 <CharacterCard :characterData="chosenCharacter" />
-                <Button @click.native="nextQuote" text="next quote" class="next-btn" />
+                <Button @click.native="newQuotePartyOnNextQuote" text="next quote" class="next-btn" />
             </div>
 
-            <div class="scores">
-                <div><img src="../assets/images/current-score.svg"><p>{{currentScore}}</p></div>
-                <div><img src="../assets/images/highest-score.svg"><p>{{highestScore}}</p></div>
-            </div>
+            <Scores :currentScore="currentScore" :highestScore="highestScore" />
         </div>
 
         <Footer />
@@ -28,27 +25,23 @@
 <script>
 import CharacterCard from '@/components/CharacterCard.vue'
 import Choice from '@/components/Choice.vue'
+import Scores from '@/components/Scores.vue'
 import Button from '@/components/Button.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 
 import {getAllCharacters, getAllQuotes} from '@/services/api/api.js'
-// console.log(getMovies())
+
 export default {
     name: 'Game',
     components: {
         CharacterCard,
         Button,
         Choice,
+        Scores,
         Header,
         Footer,
     },
-    computed: {
-		quotesFilteredData: function() {
-            let data = this.filterByMovieId(this.filterByQuoteLength(this.filterOutMinorCharacterQuotes(this.allQuotesData.docs)), this.moviesFilter)
-			return data
-		},
-	},
     watch: {
 		currentScore: function(newCurrentScore) {
 			localStorage.setItem("currentScore", newCurrentScore)
@@ -63,6 +56,9 @@ export default {
             allQuotesData: [],
             allCharactersData: [],
 
+            //Filtered Data
+            quotesFilteredData: [],
+
             //Selected Data for a quote party
             chosenQuote: [],
             chosenCharacter: [],
@@ -73,7 +69,8 @@ export default {
             showAnswer: false,
             playerClicked: false,
             toggleAnimChoices: true, //true : appearing, false: disappearing
-            toggleAnimAnswer: false, //true : appearing, false: disappearing
+            // toggleAnimAnswer: false, //true : appearing, false: disappearing
+            toggleAnimAnswer: true,
 
             //filters
             moviesFilter: localStorage.getItem("moviesFilter") || "0", //0 -> All movies
@@ -84,7 +81,7 @@ export default {
         }
     },
     created: function() {
-        this.getQuoteParty()
+        this.firstQuoteParty()
 	},
     methods: {
             filterOutMinorCharacterQuotes: function(quotes){
@@ -99,6 +96,9 @@ export default {
                 // if movieId =  0 we don't filter the data
                 return (movieId == 0 ? quotes : quotes.filter((quote) => quote.movie == movieId))
             },
+            filterQuotesData(movieId) {
+                this.quotesFilteredData = this.filterByMovieId(this.filterByQuoteLength(this.filterOutMinorCharacterQuotes(this.allQuotesData.docs)), movieId)
+            },
 			async retrieveAllQuotes() {
                 this.allQuotesData = await getAllQuotes()
                 console.log(this.allQuotesData)
@@ -112,8 +112,23 @@ export default {
                 await this.retrieveAllQuotes()
                 await this.retrieveAllCharacters()
             },
-            async getQuoteParty(){
+            async firstQuoteParty(){
                 await this.retrieveAllData()
+
+                this.filterQuotesData(this.moviesFilter)
+                this.chooseQuoteAndCharacters()
+            },
+            newQuotePartyOnNextQuote(){
+                // this.toggleAnimAnswer=false
+                // setTimeout(()=>{
+                    this.initChoices()
+                    this.chooseQuoteAndCharacters()
+                // },300);
+            },
+            newQuotePartyOnMoviesFilterChange(movieId){
+                this.initChoices()
+                this.filterQuotesData(movieId)
+                // console.log('moviesFilter in game component',this.moviesFilter)
                 this.chooseQuoteAndCharacters()
             },
             chooseQuoteAndCharacters(){
@@ -125,27 +140,25 @@ export default {
             },
             //chooses one quote from all the possible quotes
             chooseQuote() {
-                // console.log('filtered data', this.quotesFilteredData)
-                let possiblyChosenQuote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
-
-                this.chosenQuote = possiblyChosenQuote
-                console.log(this.chosenQuote)
+                console.log('filtered data', this.quotesFilteredData)
+                this.chosenQuote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
+                console.log('chosen quote : ', this.chosenQuote)
             },
             getchosenCharacter(){
-                //character associated to the quote
+                //character associated to the chosen quote
                 this.chosenCharacter = this.allCharactersData.docs.find(character => character._id === this.chosenQuote.character)
-                console.log(this.chosenCharacter)
+                console.log('chosen character : ', this.chosenCharacter)
             },
             chooseRandomCharacters(numberCharacters) {
-                console.log("filtered quotes",this.quotesFilteredData)
+                // console.log("filtered quotes",this.quotesFilteredData)
                 this.OtherRandomCharacters = [];
                 for(let i=0; i< numberCharacters; i++){ 
                     let quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
                     let character = this.allCharactersData.docs.find(character => character._id === quote.character)
 
-                    //if the character was already chosen or if it is a minor character we chose another one
-                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id) || character.name == "MINOR_CHARACTER") {
-                        quote = this.allQuotesData.docs[Math.floor(Math.random() * this.allQuotesData.docs.length)]
+                    //if the character was already chosen before, we choose another one
+                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id)) {
+                        quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
                         character = this.allCharactersData.docs.find(character => character._id === quote.character)
                     }
 
@@ -156,26 +169,22 @@ export default {
             shuffleAllChosenCharacters(){
                 this.allChosenCharacters = [];
                 this.allChosenCharacters = this.OtherRandomCharacters
-                // for(let i=0; i<this.OtherRandomCharacters.length; i++){
-                //     this.allChosenCharacters.push(this.OtherRandomCharacters[i])
-                // }
                 this.allChosenCharacters.push(this.chosenCharacter)
                 //change the order of the choices
                 this.allChosenCharacters.sort(() => 0.5 - Math.random());
-                // console.log('shuffled', this.allChosenCharacters)
+                console.log('shuffled allChosenCharacters : ', this.allChosenCharacters)
             },
             revealAnswer(id, index){
                 this.playerClicked = true
-                // console.log(index)
-                // console.log(id, this.chosenCharacter._id)
-                // console.log(this.$refs.choice)
-                if(id == this.chosenCharacter._id) {//the player has won
+
+                if(id == this.chosenCharacter._id) {
+                    //the player has won
                     this.$refs.choice[index].$el.classList.add("winner")
 
                     this.updateScores(true)
-                    
                 }
-                else {//the player has lost
+                else {
+                    //the player has lost
                     this.$refs.choice[index].$el.classList.add("looser")
 
                     //give the correct answer the winner class
@@ -184,14 +193,14 @@ export default {
                     this.updateScores(false)
                 }
 
-                setTimeout(()=>{
-                    this.toggleAnimChoices=false
-                },1000);
+                // setTimeout(()=>{
+                //     this.toggleAnimChoices=false
+                // },1000);
 
                 setTimeout(()=>{
-                    // console.log('hide choices and show info character')
+                    // hide choices and show info character
                     this.showAnswer=true
-                    setTimeout(()=>{this.toggleAnimAnswer=true},200);
+                    // setTimeout(()=>{this.toggleAnimAnswer=true},200);
                 },1300);
             },
             updateScores(playerHasWon){//true : won , false : lost
@@ -205,38 +214,21 @@ export default {
                     this.currentScore = 0
                 }
             },
-            initChoices(){
+            initChoices(){ //reset the choices
                 this.showAnswer = false
-                //re initialize style of the choices
+                //reset style of the choices
                 this.playerClicked = false
                 this.$refs.choice.forEach(el => {
                     el.$el.classList.remove('winner')
                     el.$el.classList.remove('looser')
                 })
-                this.toggleAnimAnswer=false
+                // this.toggleAnimAnswer=false
 
-                setTimeout(()=>{
-                    this.toggleAnimChoices=true
-                },200);
+                // setTimeout(()=>{
+                //     this.toggleAnimChoices=true
+                // },200);
                 
             },
-            nextQuote(){
-                this.toggleAnimAnswer=false
-                setTimeout(()=>{
-                    this.initChoices()
-                    this.chooseQuoteAndCharacters()
-                },300);
-            }, 
-            newQuoteParty(){
-                this.chosenQuote= []
-                this.chosenCharacter= []
-                this.OtherRandomCharacters= []
-                this.allChosenCharacters= []
-
-                this.initChoices()
-                this.chooseQuoteAndCharacters()
-                console.log(this.moviesFilter)
-            }
 	},
 }
 </script>
@@ -264,55 +256,6 @@ export default {
     margin-bottom: 24px;
     font-size: 1.5rem;
     margin-top: 6vh;
-}
-
-.scores {
-    width: fit-content;
-    background-color: var(--light-color);
-    box-shadow: 0px 0px 32px rgb(100 104 140 / 32%);
-    padding: 8px 12px;
-    width: 100%;
-    max-width: 144px;
-    position: relative;
-}
-.scores div > p {
-    color: var(--secondary-color);
-    font-weight: bold;
-    font-size: 1.25rem;
-}
-.scores div {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    justify-content: space-between;
-}
-.scores > div:before {
-    padding: 2px 8px;
-    background-color: var(--primary-color);
-    font-size: 0.75rem;
-    position: absolute;
-    color: var(--light-color);
-    left: calc(100% + 8px);
-    opacity: 0;
-    transition: 0.2s ease;
-    width: fit-content;
-    pointer-events: none;
-}
-.scores > div:first-child:before {
-    content: "Current score"; 
-}
-.scores > div:last-child:before {
-    content: "Highest score"; 
-}
-.scores:hover > div:before {
-    opacity: 0.87;
-}
-.scores img {
-    height: 32px;
-    width: 40px;
-}
-.scores p {
-    margin-left: 16px;
 }
 
 .answer {
@@ -375,9 +318,6 @@ export default {
     .choices {
         padding: 0 56px;
     }
-    .scores {
-        margin-top:32px;
-    }
 }
 @media (max-width: 575.98px) {
     .choices {
@@ -386,13 +326,6 @@ export default {
 
     .answer .next-btn {
         margin-top: 48px;
-    }
-
-    .scores {
-        align-self: center;
-    }
-    .scores > div:before {
-        display: none;
     }
 }
 </style>
