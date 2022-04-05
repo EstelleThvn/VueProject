@@ -1,6 +1,6 @@
 <template>
     <div id="game">
-        <Header :moviesFilter.sync="moviesFilter" v-on:moviesFilterChange="newQuotePartyOnMoviesFilterChange"/>
+        <Header v-on:moviesFilterChange="newQuotePartyOnMoviesFilterChange"/>
 
         <div class="quote-infos-container">
 
@@ -72,9 +72,6 @@ export default {
             // toggleAnimAnswer: false, //true : appearing, false: disappearing
             toggleAnimAnswer: true,
 
-            //filters
-            moviesFilter: localStorage.getItem("moviesFilter") || "0", //0 -> All movies
-
             //scores
             currentScore: Number(localStorage.getItem("currentScore")) || 0,
             highestScore: Number(localStorage.getItem("highestScore")) || 0,
@@ -115,7 +112,9 @@ export default {
             async firstQuoteParty(){
                 await this.retrieveAllData()
 
-                this.filterQuotesData(this.moviesFilter)
+                //we need to get the filter from the local storage for the first party
+                let moviesFilterFirstParty = (localStorage.getItem("moviesFilter") ? localStorage.getItem("moviesFilter") : "0");
+                this.filterQuotesData(moviesFilterFirstParty)
                 this.chooseQuoteAndCharacters()
             },
             newQuotePartyOnNextQuote(){

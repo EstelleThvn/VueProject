@@ -2,7 +2,7 @@
     <div class="filter-movies">
         <div><p>Quotes from movie:</p></div>
         <div>
-            <select :value="moviesFilter" @input="onMoviesFilterChange">
+            <select v-model="moviesFilter" @input="onMoviesFilterChange">
                 <option value="5cd95395de30eff6ebccde5c">1</option>
                 <option value="5cd95395de30eff6ebccde5b">2</option>
                 <option value="5cd95395de30eff6ebccde5d">3</option>
@@ -15,19 +15,20 @@
 <script>
 export default {
   name: 'MoviesFilter',
-  props: {
-        moviesFilter: String,
-    },
+  data() {
+    return {
+        moviesFilter: localStorage.getItem("moviesFilter") || "0", //0 -> All movies
+    }
+  },
     watch: {
 		moviesFilter: function(newMoviesFilter) {
 			localStorage.setItem("moviesFilter", newMoviesFilter)
-            console.log('change moviesFilter in Storage', newMoviesFilter)
+            console.log('Change moviesFilter in Storage', newMoviesFilter)
 		},
 	},
     methods: {
 		onMoviesFilterChange(event) {
             // console.log('event target value filter change',event.target.value)
-			this.$emit("update:moviesFilter", event.target.value)
             this.$emit("moviesFilterChange", event.target.value)
 		},
 	}
