@@ -5,7 +5,7 @@
         <div class="quote-infos-container">
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
-            <Choices v-show="!showAnswer" :allChosenCharacters="allChosenCharacters" :chosenCharacter="chosenCharacter" :playerClicked="playerClicked" v-on:updateScores="updateScores" v-on:showAnswer="showAnswer=true" v-on:playerClicked="playerClicked=true" />
+            <Choices v-show="!showAnswer" :allChosenCharacters="allChosenCharacters" :chosenCharacter="chosenCharacter" :playerClicked.sync="playerClicked" v-on:updateScores="updateScores" v-on:showAnswer="showAnswer=true" />
             <!-- use of v-if instead of v-show for the answer so that we can't see the name of the correct character in the code before answering -->
             <div v-if="showAnswer" class="answer">
                 <CharacterCard :characterData="chosenCharacter" />

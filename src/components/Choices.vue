@@ -29,7 +29,7 @@ export default {
   },
   methods: {
       revealAnswer(id, index){
-            this.$emit("playerClicked")
+            this.$emit('update:playerClicked', true) 
 
             if(id == this.chosenCharacter._id) {
                 //the player has won
