@@ -3,14 +3,11 @@
         <Header v-on:moviesFilterChange="newQuotePartyOnMoviesFilterChange"/>
 
         <div class="quote-infos-container">
-
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
-            <div v-show="!showAnswer" class="choices" ref="choicesContainer" v-bind:class="{unselectableChoices: playerClicked, visible:toggleAnimChoices, invisible:!toggleAnimChoices}">
-                <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="index" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
-            </div>
+            <Choices v-show="!showAnswer" :allChosenCharacters="allChosenCharacters" :chosenCharacter="chosenCharacter" :playerClicked="playerClicked" v-on:updateScores="updateScores" v-on:showAnswer="showAnswer=true" v-on:playerClicked="playerClicked=true" />
             <!-- use of v-if instead of v-show for the answer so that we can't see the name of the correct character in the code before answering -->
-            <div v-if="showAnswer" class="answer" v-bind:class="{visible:toggleAnimAnswer, invisible:!toggleAnimAnswer}">
+            <div v-if="showAnswer" class="answer">
                 <CharacterCard :characterData="chosenCharacter" />
                 <Button @click.native="newQuotePartyOnNextQuote" text="next quote" class="next-btn" />
             </div>
@@ -24,7 +21,7 @@
 
 <script>
 import CharacterCard from '@/components/CharacterCard.vue'
-import Choice from '@/components/Choice.vue'
+import Choices from '@/components/Choices.vue'
 import Scores from '@/components/Scores.vue'
 import Button from '@/components/Button.vue'
 import Header from '@/components/Header.vue'
@@ -37,7 +34,7 @@ export default {
     components: {
         CharacterCard,
         Button,
-        Choice,
+        Choices,
         Scores,
         Header,
         Footer,
@@ -60,17 +57,14 @@ export default {
             quotesFilteredData: [],
 
             //Selected Data for a quote party
-            chosenQuote: [],
-            chosenCharacter: [],
+            chosenQuote: {},
+            chosenCharacter: {},
             OtherRandomCharacters: [],
             allChosenCharacters: [],
 
             //For styling purposes
             showAnswer: false,
             playerClicked: false,
-            toggleAnimChoices: true, //true : appearing, false: disappearing
-            // toggleAnimAnswer: false, //true : appearing, false: disappearing
-            toggleAnimAnswer: true,
 
             //scores
             currentScore: Number(localStorage.getItem("currentScore")) || 0,
@@ -118,11 +112,8 @@ export default {
                 this.chooseQuoteAndCharacters()
             },
             newQuotePartyOnNextQuote(){
-                // this.toggleAnimAnswer=false
-                // setTimeout(()=>{
                     this.initChoices()
                     this.chooseQuoteAndCharacters()
-                // },300);
             },
             newQuotePartyOnMoviesFilterChange(movieId){
                 this.initChoices()
@@ -173,35 +164,6 @@ export default {
                 this.allChosenCharacters.sort(() => 0.5 - Math.random());
                 console.log('shuffled allChosenCharacters : ', this.allChosenCharacters)
             },
-            revealAnswer(id, index){
-                this.playerClicked = true
-
-                if(id == this.chosenCharacter._id) {
-                    //the player has won
-                    this.$refs.choice[index].$el.classList.add("winner")
-
-                    this.updateScores(true)
-                }
-                else {
-                    //the player has lost
-                    this.$refs.choice[index].$el.classList.add("looser")
-
-                    //give the correct answer the winner class
-                    this.$refs.choice.find(el => el.characterId == this.chosenCharacter._id).$el.classList.add("winner")
-
-                    this.updateScores(false)
-                }
-
-                // setTimeout(()=>{
-                //     this.toggleAnimChoices=false
-                // },1000);
-
-                setTimeout(()=>{
-                    // hide choices and show info character
-                    this.showAnswer=true
-                    // setTimeout(()=>{this.toggleAnimAnswer=true},200);
-                },1300);
-            },
             updateScores(playerHasWon){//true : won , false : lost
                 if(playerHasWon){
                     if(this.highestScore==this.currentScore){
@@ -213,20 +175,10 @@ export default {
                     this.currentScore = 0
                 }
             },
-            initChoices(){ //reset the choices
+            initChoices(){
                 this.showAnswer = false
                 //reset style of the choices
                 this.playerClicked = false
-                this.$refs.choice.forEach(el => {
-                    el.$el.classList.remove('winner')
-                    el.$el.classList.remove('looser')
-                })
-                // this.toggleAnimAnswer=false
-
-                // setTimeout(()=>{
-                //     this.toggleAnimChoices=true
-                // },200);
-                
             },
 	},
 }
@@ -265,36 +217,6 @@ export default {
 }
 .answer .next-btn {
     margin-top: 56px;
-}
-
-.choices {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    padding: 0 80px;
-}
-
-.choices.invisible, .answer.invisible{
-    transform: translateX(80px);
-    opacity: 0;
-    transition: 0.2s ease;
-}
-.choices.visible, .answer.visible{
-    transform: translateX(0px);
-    opacity: 1;
-    transition: 0.2s ease;
-}
-
-.unselectableChoices {
-    pointer-events: none;
-}
-
-.choices .choice-card:first-child {
-    margin-top: 0;
-}
-.choices .choice-card:last-child {
-    margin-bottom: 0;
 }
 
 /* ------------- */
