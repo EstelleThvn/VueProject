@@ -1,9 +1,17 @@
 <template>
     <header>
+        <div class="links">
         <router-link to="/" class="home-btn">
             <img src="../assets/images/home-logo.svg">
             <p>Home</p>
         </router-link>
+        <router-link to="/game">
+            <p>Game</p>
+        </router-link>
+        <router-link to="/statistics">
+            <p>Stats</p>
+        </router-link>
+        </div>
 
         <MoviesFilter v-bind="$props" v-on="$listeners" />
     </header>
@@ -37,21 +45,38 @@
         width: 100%;
     }
 
+    .links{
+        display: flex;
+        align-items: center;
+    }
+    .links a {
+        color: var(--secondary-color);
+        padding: 8px 16px;
+        height: 100%;
+        width: fit-content;
+        transition:0.2s ease;
+        margin: 0 8px;
+    }
+    .links a p {
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .links a:first-child {
+        margin-left: 0;
+    }
+    .links a:last-child  {
+        margin-right: 0;
+    }
+    .links a:hover{
+        background-color: rgba(100, 104, 140,0.20);
+    }
+
     .home-btn{
         display: flex;
         align-items: center;
-        color: var(--secondary-color);
-        padding: 8px 16px;
-        width: fit-content;
-        transition:0.2s ease;
-    }
-    .home-btn:hover{
-        background-color: rgba(100, 104, 140,0.20);
     }
     .home-btn p {
-        font-weight: bold;
-        margin-left: 16px;
-        text-transform: uppercase;
+        margin-left: 8px;
     }
     .home-btn img{
         height: 40px;
@@ -94,13 +119,26 @@
         padding: 12px 24px;
     }
     .filter-movies {
-        padding: 0px 24px;
+        padding: 8px 16px;
     }
     .filter-movies > div:first-child {
         margin-right: 16px;
     }
     .filter-movies select {
         padding: 4px 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    /*.links{
+        flex-direction: column;
+    }*/
+    .links a {
+        margin: 0;
+        padding: 8px 8px;
+    }
+    .links a:first-child, .filter-movies {
+        padding: 8px 16px;
     }
 }
 </style>

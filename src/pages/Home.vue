@@ -138,7 +138,7 @@ export default {
         border: 32px solid #12172C;
     }
     .text {
-        margin: 48px 24px;
+        margin: 48px 32px;
         margin-top: 0;
     }
     .btn-play{

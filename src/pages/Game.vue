@@ -1,6 +1,6 @@
 <template>
     <div id="game">
-        <Header v-on:moviesFilterChange="newQuotePartyOnMoviesFilterChange"/>
+        <Header :moviesFilter.sync="moviesFilter" v-on:moviesFilterChange="newQuotePartyOnMoviesFilterChange"/>
 
         <div class="quote-infos-container">
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
@@ -62,6 +62,9 @@ export default {
             OtherRandomCharacters: [],
             allChosenCharacters: [],
 
+            //movies filter
+            moviesFilter: localStorage.getItem("moviesFilter") || "0", //0 -> All movies
+
             //For styling purposes
             showAnswer: false,
             playerClicked: false,
@@ -106,9 +109,7 @@ export default {
             async firstQuoteParty(){
                 await this.retrieveAllData()
 
-                //we need to get the filter from the local storage for the first party
-                let moviesFilterFirstParty = (localStorage.getItem("moviesFilter") ? localStorage.getItem("moviesFilter") : "0");
-                this.filterQuotesData(moviesFilterFirstParty)
+                this.filterQuotesData(this.moviesFilter)
                 this.chooseQuoteAndCharacters()
             },
             newQuotePartyOnNextQuote(){

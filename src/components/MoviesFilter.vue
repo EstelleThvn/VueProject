@@ -2,7 +2,7 @@
     <div class="filter-movies">
         <div><p>Quotes from movie:</p></div>
         <div>
-            <select v-model="moviesFilter" @input="onMoviesFilterChange">
+            <select :value="moviesFilter" @input="onMoviesFilterChange">
                 <option value="5cd95395de30eff6ebccde5c">1</option>
                 <option value="5cd95395de30eff6ebccde5b">2</option>
                 <option value="5cd95395de30eff6ebccde5d">3</option>
@@ -15,10 +15,8 @@
 <script>
 export default {
   name: 'MoviesFilter',
-  data() {
-    return {
-        moviesFilter: localStorage.getItem("moviesFilter") || "0", //0 -> All movies
-    }
+  props: {
+        moviesFilter: String,
   },
     watch: {
 		moviesFilter: function(newMoviesFilter) {
@@ -30,6 +28,7 @@ export default {
 		onMoviesFilterChange(event) {
             // console.log('event target value filter change',event.target.value)
             this.$emit("moviesFilterChange", event.target.value)
+            this.$emit('update:moviesFilter', event.target.value)
 		},
 	}
 }
@@ -73,4 +72,14 @@ export default {
         padding: 4px 0;
     }
 }
+@media (max-width: 575.98px) {
+    .filter-movies > div:first-child {
+        margin-right: 12px;
+    }
+    .filter-movies > div:first-child p {
+        line-height: 1.25rem;
+        font-size: 1rem;
+    }
+}
+
 </style>
