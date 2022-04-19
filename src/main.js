@@ -5,16 +5,8 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
-import Home from "./pages/Home.vue"
-import Game from "./pages/Game.vue"
-import Stats from "./pages/Stats.vue"
-
-const routes = [
-  { path: '/', component: Home },
-  { path: '/game', component: Game },
-  { path: '/statistics', component: Stats },
-  { path: '*', redirect: '/'},
-]
+//import routes
+import {routes} from '@/services/routes.js'
 
 const router = new VueRouter({
   mode:'history',
@@ -26,8 +18,6 @@ const router = new VueRouter({
 import VueKinesis from 'vue-kinesis'
 Vue.use(VueKinesis)
 //---------
-
-
 
 
 Vue.config.productionTip = false

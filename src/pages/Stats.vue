@@ -38,31 +38,40 @@ export default {
   computed: {
 		speakingCharactersOrganizedData: function() {
             let quotes;
-            if(this.moviesFilter != "0" && this.allQuotesData.docs){
-                quotes = this.allQuotesData.docs.filter((quote) => quote.movie == this.moviesFilter).filter((quote) => quote.character != "5cdbe49b7ed9587226e794a0")
+            if(this.allQuotesData.docs){
+                if(this.moviesFilter != "0"){
+                    quotes = this.allQuotesData.docs.filter((quote) => quote.movie == this.moviesFilter)
+                }
+                else{
+                    quotes = this.allQuotesData.docs
+                }
+
+                //filter out the minor character's quotes
+                quotes = quotes.filter((quote) => quote.character != "5cdbe49b7ed9587226e794a0")
             }
             else {
-                quotes = this.allQuotesData.docs
+                //if the quotes haven't been retrieved yet
+                quotes = []
             }
-            
-            // console.log('FILTERED QUOTES', quotes)
+
+            console.log('FILTERED QUOTES', quotes)
 
             let speakingCharacters = [];
 
-            if(quotes != undefined ){
-                quotes.forEach(quote => {
-                    let character = speakingCharacters.find(character => character._id === quote.character)
+            quotes.forEach(quote => {
+                let character = speakingCharacters.find(character => character._id === quote.character)
 
-                    if(character){
-                        character.numberOfQuotes++
-                    }
-                    else {
+                if(character){
+                    character.numberOfQuotes++
+                }
+                else {
+                    if(this.allCharactersData.docs) {
                         character = this.allCharactersData.docs.find(character => character._id === quote.character)
                         character.numberOfQuotes=1
                         speakingCharacters.push(character)
                     }
-                })
-            }
+                }
+            })
             
 
             console.log('speaking Characters', speakingCharacters)
@@ -74,11 +83,9 @@ export default {
 
             const labels = [];
             speakingCharacters.forEach(character => labels.push(character.name))
-            // organizedData.labels = labels
 
             const dataValues = [];
             speakingCharacters.forEach(character => dataValues.push(character.numberOfQuotes))
-            // organizedData.datasets.data = dataValues
 
             let organizedData =  {
                 labels: labels,
@@ -87,7 +94,7 @@ export default {
                     backgroundColor: '#64688C',
                     data: dataValues
                     }]
-                };
+            };
 
             console.log(organizedData)
             
@@ -95,38 +102,43 @@ export default {
 		},
         QuoteWordsData: function() {
             let quotes;
-            if(this.moviesFilter != "0" && this.allQuotesData.docs){
-                quotes = this.allQuotesData.docs.filter((quote) => quote.movie == this.moviesFilter)
+            if(this.allQuotesData.docs){
+                if(this.moviesFilter != "0"){
+                    quotes = this.allQuotesData.docs.filter((quote) => quote.movie == this.moviesFilter)
+                }
+                else{
+                    quotes = this.allQuotesData.docs
+                }
             }
             else {
-                quotes = this.allQuotesData.docs
+                //if the quotes haven't been retrieved yet
+                quotes = []
             }
 
+            //get all the words from the quotes
             let totalwords = [];
+            quotes.forEach(quote => {
+                const wordsInQuote = quote.dialog.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").split(' ').filter(word => word.length > 2);
 
-            if(quotes != undefined){
-                quotes.forEach(quote => {
-                    const wordsInQuote = quote.dialog.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").split(' ').filter(word => word.length > 2);
+                wordsInQuote.forEach(wordInQuote => {
+                    wordInQuote= wordInQuote.toLowerCase()
 
-                    wordsInQuote.forEach(wordInQuote => {
-                        wordInQuote= wordInQuote.toLowerCase()
-
-                        if(totalwords.find(word => word.name === wordInQuote)){
-                            totalwords.find(word => word.name === wordInQuote).value++
-                        }
-                        else {
-                            let newWord = new Object();
-                            newWord.name = wordInQuote
-                            newWord.value=1
-                            totalwords.push(newWord)
-                        }
-                    })
+                    if(totalwords.find(word => word.name === wordInQuote)){
+                        totalwords.find(word => word.name === wordInQuote).value++
+                    }
+                    else {
+                        let newWord = new Object();
+                        newWord.name = wordInQuote
+                        newWord.value=1
+                        totalwords.push(newWord)
+                    }
                 })
+            })
 
-                totalwords.sort(function(a, b){return a.value - b.value}).reverse()
-                totalwords = totalwords.filter(word => word.value > 1)
-                if(totalwords.length > 200 ) totalwords = totalwords.filter((word,index) => index < 200)
-            }
+            //sort the array of words
+            totalwords.sort(function(a, b){return a.value - b.value}).reverse()
+            totalwords = totalwords.filter(word => word.value > 1)
+            if(totalwords.length > 200 ) totalwords = totalwords.filter((word,index) => index < 200)
             
             console.log('TOTAL WORDS', totalwords)
             
