@@ -1,6 +1,6 @@
 <template>
   <div class="choices-container" v-bind:class="{unselectableChoices: playerClicked}">
-      <Choice ref="choice" v-for="(character,index) in allChosenCharacters" :key="index" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id"/>
+      <Choice ref="choice" v-for="(character,index) in characterChoicesData" :key="index" @click.native="revealAnswer(character._id, index)" :characterName="character.name" :characterId="character._id" :winner="character.winner" :looser="character.looser"/>
   </div>
 </template>
 
@@ -20,29 +20,41 @@ export default {
   watch: {
     playerClicked() {
       if(!this.playerClicked){
-          this.$refs.choice.forEach(el => {
-                    el.$el.classList.remove('winner')
-                    el.$el.classList.remove('looser')
+          this.characterChoicesData.forEach(el => {
+                    el.looser = false
+                    el.winner = false
             })
       }
     }
   },
+  computed: {
+        //allChosenCharacters with winning and loosing states
+		characterChoicesData: function() {
+            let data = this.allChosenCharacters
+            data.forEach(character => {
+                    character.winner = false
+                    character.looser = false
+            })
+            console.log('TEST', data)
+            return data
+        }
+    },
   methods: {
       revealAnswer(id, index){
             this.$emit('update:playerClicked', true) 
 
             if(id == this.chosenCharacter._id) {
                 //the player has won
-                this.$refs.choice[index].$el.classList.add("winner")
+                this.characterChoicesData[index].winner = true
 
                 this.$emit("updateScores", true)
             }
             else {
                 //the player has lost
-                this.$refs.choice[index].$el.classList.add("looser")
+                this.characterChoicesData[index].looser = true
 
                 //give the correct answer the winner class
-                this.$refs.choice.find(el => el.characterId == this.chosenCharacter._id).$el.classList.add("winner")
+                this.characterChoicesData.find(el => el._id == this.chosenCharacter._id).winner = true
 
                 this.$emit("updateScores", false)
             }

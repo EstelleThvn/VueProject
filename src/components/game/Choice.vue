@@ -1,5 +1,5 @@
 <template>
-  <div class="choice-card">
+  <div class="choice-card" v-bind:class="{winner: winner, looser: looser}">
       <p>{{characterName}}</p>
   </div>
 </template>
@@ -10,6 +10,8 @@ export default {
   props: {
       characterName: String,
       characterId: String,
+      winner: Boolean,
+      looser: Boolean,
   }
 }
 </script>
