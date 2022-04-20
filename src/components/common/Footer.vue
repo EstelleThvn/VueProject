@@ -4,7 +4,7 @@
 
         <router-link to="/" class="home-btn">
             <p>Home</p>
-            <img src="../assets/images/home-logo-footer.svg">
+            <img src="@/assets/images/home-logo-footer.svg">
         </router-link>
     </footer>
 </template>

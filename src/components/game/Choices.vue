@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Choice from '@/components/Choice.vue'
+import Choice from '@/components/game/Choice.vue'
 
 export default {
   name: 'Choices',
@@ -49,7 +49,7 @@ export default {
 
             setTimeout(()=>{
                 // hide choices and show info character
-                this.$emit("showAnswer")
+                this.$emit("update:showAnswer", true)
             },1300);
         },
   },

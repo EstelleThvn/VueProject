@@ -54,29 +54,6 @@ export default {
   },
   data() {
     return {
-    //   chartData: {
-    //     labels: [
-    //       'January',
-    //       'February',
-    //       'March',
-    //       'April',
-    //       'May',
-    //       'June',
-    //       'July',
-    //       'August',
-    //       'September',
-    //       'October',
-    //       'November',
-    //       'December'
-    //     ],
-    //     datasets: [
-    //       {
-    //         label: 'Number of quotes',
-    //         backgroundColor: '#64688C',
-    //         data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-    //       }
-    //     ]
-    //   },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false

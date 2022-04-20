@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import Wordcloud from '@/components/Wordcloud.vue'
-import BarChart from '@/components/CharacterQuotesChart.vue'
+import Header from '@/components/common/Header.vue'
+import Footer from '@/components/common/Footer.vue'
+import Wordcloud from '@/components/stats/Wordcloud.vue'
+import BarChart from '@/components/stats/CharacterQuotesChart.vue'
 
 import {getAllCharacters, getAllQuotes} from '@/services/api/api.js'
 

@@ -2,7 +2,7 @@
     <header>
         <div class="links">
         <router-link to="/" class="home-btn">
-            <img src="../assets/images/home-logo.svg">
+            <img src="@/assets/images/home-logo.svg">
             <p>Home</p>
         </router-link>
         <router-link to="/game">
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-    import MoviesFilter from '@/components/MoviesFilter.vue'
+    import MoviesFilter from '@/components/common/MoviesFilter.vue'
 
     export default {
     name: 'Header',

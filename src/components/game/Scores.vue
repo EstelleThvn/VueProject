@@ -1,7 +1,7 @@
 <template>
   <div class="scores">
-    <div><img src="../assets/images/current-score.svg"><p>{{currentScore}}</p></div>
-    <div><img src="../assets/images/highest-score.svg"><p>{{highestScore}}</p></div>
+    <div><img src="@/assets/images/current-score.svg"><p>{{currentScore}}</p></div>
+    <div><img src="@/assets/images/highest-score.svg"><p>{{highestScore}}</p></div>
 </div>
 </template>
 

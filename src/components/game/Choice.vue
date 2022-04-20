@@ -66,11 +66,11 @@ export default {
   pointer-events: none;
 }
 .winner::before {
-  background-image: url("../assets/images/check-mark.svg");
+  background-image: url("../../assets/images/check-mark.svg");
   opacity:1;
 }
 .looser::before {
-  background-image: url("../assets/images/cross.svg");
+  background-image: url("../../assets/images/cross.svg");
   opacity:1;
 }
 
@@ -100,10 +100,10 @@ export default {
       transform: translate(0, -50%);
     }
     .winner::before {
-      background-image: url("../assets/images/check-mark-xs.svg");
+      background-image: url("../../assets/images/check-mark-xs.svg");
     }
     .looser::before {
-      background-image: url("../assets/images/cross-xs.svg");
+      background-image: url("../../assets/images/cross-xs.svg");
     }
 }
 </style>

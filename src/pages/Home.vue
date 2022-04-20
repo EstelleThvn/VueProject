@@ -4,16 +4,16 @@
         <kinesis-container class="scene">
             <img src="@/assets/images/parallax/layer7.png">
             <kinesis-element :strength="20">
-                <img src="../assets/images/parallax/layer6.png">
+                <img src="@/assets/images/parallax/layer6.png">
             </kinesis-element>
             <kinesis-element :strength="16">
-                <img src="../assets/images/parallax/layer5.png">
+                <img src="@/assets/images/parallax/layer5.png">
             </kinesis-element>
             <kinesis-element :strength="12">
-                <img src="../assets/images/parallax/layer4.png">
+                <img src="@/assets/images/parallax/layer4.png">
             </kinesis-element>
             <kinesis-element :strength="8">
-                <img src="../assets/images/parallax/layer3.png">
+                <img src="@/assets/images/parallax/layer3.png">
             </kinesis-element>
             <kinesis-element :strength="4">
                 <img src="../assets/images/parallax/layer2.png">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Button from '@/components/Button.vue'
+import Button from '@/components/common/Button.vue'
 
 export default {
   name: 'Home',
