@@ -3,7 +3,7 @@
     <Header :moviesFilter.sync="moviesFilter"/>
 
     <section class="main-container">
-        <p class="page-info">Data-visualization of the quotes from the movies</p>
+        <p class="page-info">Data visualization of the quotes from the movies</p>
         <div>
             <h2>The top 10 most talkative characters </h2>
             <BarChart :chartData="speakingCharactersOrganizedData"/>
