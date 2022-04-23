@@ -3,6 +3,7 @@
     <Header :moviesFilter.sync="moviesFilter"/>
 
     <section class="main-container">
+        <p class="page-info">Data-visualization of the quotes from the movies</p>
         <div>
             <h2>The top 10 most talkative characters </h2>
             <BarChart :chartData="speakingCharactersOrganizedData"/>
@@ -10,7 +11,7 @@
         
         <div>
             <h2>The words that come up most often </h2>
-            <Wordcloud :defaultWords="QuoteWordsData" />
+            <Wordcloud :defaultWords="QuoteWordsOrganizedData" />
         </div>
     </section>
 
@@ -36,6 +37,7 @@ export default {
         BarChart,
     },
   computed: {
+        //organizes data for the bar chart
 		speakingCharactersOrganizedData: function() {
             let quotes;
             if(this.allQuotesData.docs){
@@ -54,7 +56,6 @@ export default {
                 quotes = []
             }
 
-            console.log('FILTERED QUOTES', quotes)
 
             let speakingCharacters = [];
 
@@ -73,8 +74,6 @@ export default {
                 }
             })
             
-
-            console.log('speaking Characters', speakingCharacters)
 
             speakingCharacters.sort((a, b) => (a.numberOfQuotes > b.numberOfQuotes) ? -1 : 1)
             if(speakingCharacters.length > 10 ) speakingCharacters = speakingCharacters.filter((character,index) => index < 10)
@@ -95,12 +94,11 @@ export default {
                     data: dataValues
                     }]
             };
-
-            console.log(organizedData)
             
 			return organizedData
 		},
-        QuoteWordsData: function() {
+        //sorts quotes data for the wordcloud
+        QuoteWordsOrganizedData: function() {
             let quotes;
             if(this.allQuotesData.docs){
                 if(this.moviesFilter != "0"){
@@ -140,8 +138,6 @@ export default {
             totalwords = totalwords.filter(word => word.value > 1)
             if(totalwords.length > 200 ) totalwords = totalwords.filter((word,index) => index < 200)
             
-            console.log('TOTAL WORDS', totalwords)
-            
 			return totalwords
 		}
 	},
@@ -162,11 +158,9 @@ export default {
     methods: {
         async retrieveAllQuotes() {
             this.allQuotesData = await getAllQuotes()
-            // console.log(this.allQuotesData)
         },
         async retrieveAllCharacters() {
             this.allCharactersData = await getAllCharacters()
-            // console.log(this.allCharactersData)
         },
 	}
 }
@@ -199,6 +193,11 @@ export default {
         margin-top: 40px;
         margin-bottom: 16px;
     }
+    .page-info {
+        margin-top: 48px;
+        text-align: center;
+        font-size: 1.25rem;
+    }
 
     /* ------------- */
     /* MEDIA QUERIES */
@@ -212,6 +211,9 @@ export default {
             font-size: 1.75rem;
             line-height: 2.75rem;
             margin-bottom: 12px;
+        }
+        .page-info {
+            font-size: 1.125rem;
         }
     }
 </style>

@@ -78,109 +78,100 @@ export default {
         this.firstQuoteParty()
 	},
     methods: {
-            filterOutMinorCharacterQuotes: function(quotes){
-                //filter out quotes said by a minor character
-                return quotes.filter((quote) => quote.character != "5cdbe49b7ed9587226e794a0")
-            },
-            filterByQuoteLength: function(quotes){
-                //filter out the quotes that are too short or too long
-                return quotes.filter((quote) => quote.dialog.length>20 && quote.dialog.length<100)
-            },
-            filterByMovieId: function(quotes, movieId){
-                // if movieId =  0 we don't filter the data
-                return (movieId == 0 ? quotes : quotes.filter((quote) => quote.movie == movieId))
-            },
-            filterQuotesData(movieId) {
-                this.quotesFilteredData = this.filterByMovieId(this.filterByQuoteLength(this.filterOutMinorCharacterQuotes(this.allQuotesData.docs)), movieId)
-            },
-			async retrieveAllQuotes() {
-                this.allQuotesData = await getAllQuotes()
-                console.log(this.allQuotesData)
-                // console.log('quotesfiltereddata', this.quotesFilteredData)
-			},
-            async retrieveAllCharacters() {
-                this.allCharactersData = await getAllCharacters()
-                // console.log(this.allCharactersData)
-			},
-            async retrieveAllData() {
-                await this.retrieveAllQuotes()
-                await this.retrieveAllCharacters()
-            },
-            async firstQuoteParty(){
-                await this.retrieveAllData()
+        //filter out quotes said by a minor character
+        filterOutMinorCharacterQuotes: function(quotes){
+            return quotes.filter((quote) => quote.character != "5cdbe49b7ed9587226e794a0")
+        },
+        //filter out the quotes that are too short or too long
+        filterByQuoteLength: function(quotes){
+            return quotes.filter((quote) => quote.dialog.length>20 && quote.dialog.length<100)
+        },
+        filterByMovieId: function(quotes, movieId){
+            // if movieId =  0 we don't filter the data
+            return (movieId == 0 ? quotes : quotes.filter((quote) => quote.movie == movieId))
+        },
+        filterQuotesData(movieId) {
+            this.quotesFilteredData = this.filterByMovieId(this.filterByQuoteLength(this.filterOutMinorCharacterQuotes(this.allQuotesData.docs)), movieId)
+        },
+        async retrieveAllQuotes() {
+            this.allQuotesData = await getAllQuotes()
+        },
+        async retrieveAllCharacters() {
+            this.allCharactersData = await getAllCharacters()
+        },
+        async retrieveAllData() {
+            await this.retrieveAllQuotes()
+            await this.retrieveAllCharacters()
+        },
+        async firstQuoteParty(){
+            await this.retrieveAllData()
 
-                this.filterQuotesData(this.moviesFilter)
-                this.chooseQuoteAndCharacters()
-            },
-            newQuotePartyOnNextQuote(){
-                    this.initChoices()
-                    this.chooseQuoteAndCharacters()
-            },
-            newQuotePartyOnMoviesFilterChange(movieId){
+            this.filterQuotesData(this.moviesFilter)
+            this.chooseQuoteAndCharacters()
+        },
+        newQuotePartyOnNextQuote(){
                 this.initChoices()
-                this.filterQuotesData(movieId)
-                // console.log('moviesFilter in game component',this.moviesFilter)
                 this.chooseQuoteAndCharacters()
-            },
-            chooseQuoteAndCharacters(){
-                this.chooseQuote()
-                this.getchosenCharacter()
-                this.chooseRandomCharacters(3)
+        },
+        newQuotePartyOnMoviesFilterChange(movieId){
+            this.initChoices()
+            this.filterQuotesData(movieId)
+            this.chooseQuoteAndCharacters()
+        },
+        chooseQuoteAndCharacters(){
+            this.chooseQuote()
+            this.getchosenCharacter()
+            this.chooseRandomCharacters(3)
 
-                this.shuffleAllChosenCharacters()
-            },
-            //chooses one quote from all the possible quotes
-            chooseQuote() {
-                console.log('filtered data', this.quotesFilteredData)
-                this.chosenQuote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
-                console.log('chosen quote : ', this.chosenQuote)
-            },
-            getchosenCharacter(){
-                //character associated to the chosen quote
-                this.chosenCharacter = this.allCharactersData.docs.find(character => character._id === this.chosenQuote.character)
-                console.log('chosen character : ', this.chosenCharacter)
-            },
-            chooseRandomCharacters(numberCharacters) {
-                // console.log("filtered quotes",this.quotesFilteredData)
-                this.OtherRandomCharacters = [];
-                for(let i=0; i< numberCharacters; i++){ 
-                    let quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
-                    let character = this.allCharactersData.docs.find(character => character._id === quote.character)
+            this.shuffleAllChosenCharacters()
+        },
+        //chooses one quote from all the possible quotes
+        chooseQuote() {
+            this.chosenQuote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
+        },
+        //get the character associated to the chosen quote
+        getchosenCharacter(){
+            this.chosenCharacter = this.allCharactersData.docs.find(character => character._id === this.chosenQuote.character)
+        },
+        chooseRandomCharacters(numberCharacters) {
+            //choose the other characters for the quote party
+            this.OtherRandomCharacters = [];
+            for(let i=0; i< numberCharacters; i++){ 
+                let quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
+                let character = this.allCharactersData.docs.find(character => character._id === quote.character)
 
-                    //if the character was already chosen before, we choose another one
-                    while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id)) {
-                        quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
-                        character = this.allCharactersData.docs.find(character => character._id === quote.character)
-                    }
+                //if the character was already chosen before, we choose another one
+                while(this.chosenCharacter._id == character._id || this.OtherRandomCharacters.find(chara => chara._id === character._id)) {
+                    quote = this.quotesFilteredData[Math.floor(Math.random() * this.quotesFilteredData.length)]
+                    character = this.allCharactersData.docs.find(character => character._id === quote.character)
+                }
 
-                    this.OtherRandomCharacters.push(character);
+                this.OtherRandomCharacters.push(character);
+            }
+        },
+        shuffleAllChosenCharacters(){
+            this.allChosenCharacters = [];
+            this.allChosenCharacters = this.OtherRandomCharacters
+            this.allChosenCharacters.push(this.chosenCharacter)
+            //change the order of the choices
+            this.allChosenCharacters.sort(() => 0.5 - Math.random())
+        },
+        updateScores(playerHasWon){//true : won , false : lost
+            if(playerHasWon){
+                if(this.highestScore==this.currentScore){
+                    this.highestScore++
                 }
-                // console.log('not shuffled characters', this.OtherRandomCharacters)
-            },
-            shuffleAllChosenCharacters(){
-                this.allChosenCharacters = [];
-                this.allChosenCharacters = this.OtherRandomCharacters
-                this.allChosenCharacters.push(this.chosenCharacter)
-                //change the order of the choices
-                this.allChosenCharacters.sort(() => 0.5 - Math.random());
-                console.log('shuffled allChosenCharacters : ', this.allChosenCharacters)
-            },
-            updateScores(playerHasWon){//true : won , false : lost
-                if(playerHasWon){
-                    if(this.highestScore==this.currentScore){
-                        this.highestScore++
-                    }
-                    this.currentScore++
-                }
-                else {
-                    this.currentScore = 0
-                }
-            },
-            initChoices(){
-                this.showAnswer = false
-                //reset style of the choices
-                this.playerClicked = false
-            },
+                this.currentScore++
+            }
+            else {
+                this.currentScore = 0
+            }
+        },
+        initChoices(){
+            this.showAnswer = false
+            //re-initialize the choices
+            this.playerClicked = false
+        },
 	},
 }
 </script>

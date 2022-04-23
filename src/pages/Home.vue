@@ -29,9 +29,15 @@
             <p>One movie quote from The Lord of the Ring, and only one correct answer.</p>
             <p>Guess which character said it!</p>
 
-            <router-link to="/game">
-                <Button text="play" class="btn-play" />
-            </router-link>
+            <div class="buttons">
+                <router-link to="/game">
+                    <Button text="play" class="btn btn-play" />
+                </router-link>
+
+                <router-link to="/statistics">
+                    <Button text="stats" class="btn btn-stats" />
+                </router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -61,14 +67,19 @@ export default {
     p {
         color: rgba(254,254,255, .87);
         max-width:400px;
+        opacity: 0.87;
     }
     .text {
         position: absolute;
         bottom: 64px;
         left: 6%;
     }
-    .btn-play{
+    .buttons{
+        display: flex;
         margin-top: 32px;
+    }
+    .buttons a:last-child {
+        margin-left: 32px;
     }
     .scene{
         overflow: hidden;
@@ -98,14 +109,6 @@ export default {
 /* ------------- */
 /* MEDIA QUERIES */
 /* ------------- */
-@media (max-width: 1199.98px) {
-    
-}
-
-@media (max-width: 991.98px) {
-    
-}
-
 @media (max-width: 767.98px) {
     .homepage {
         display:flex;
@@ -141,9 +144,8 @@ export default {
         margin: 48px 32px;
         margin-top: 0;
     }
-    .btn-play{
-        margin: auto;
-        margin-top: 32px;
+    .buttons {
+        justify-content: center;
     }
 }
 </style>

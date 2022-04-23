@@ -19,7 +19,7 @@ export default {
 
 <style scoped>
 .choice-card {
-  border: 2px solid var(--primary-color);;
+  border: 2px solid var(--primary-color);
   transition: 0.2s ease;
   margin: 12px 0;
   text-align: center;

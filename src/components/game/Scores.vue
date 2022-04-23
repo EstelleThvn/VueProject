@@ -65,6 +65,10 @@ export default {
 .scores p {
     margin-left: 16px;
 }
+
+/* ------------- */
+/* MEDIA QUERIES */
+/* ------------- */
 @media (max-width: 991.98px) {
     .scores {
         margin-top:24px;

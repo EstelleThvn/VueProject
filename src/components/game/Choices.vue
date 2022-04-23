@@ -35,7 +35,6 @@ export default {
                     character.winner = false
                     character.looser = false
             })
-            console.log('TEST', data)
             return data
         }
     },

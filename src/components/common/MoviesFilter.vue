@@ -21,12 +21,10 @@ export default {
     watch: {
 		moviesFilter: function(newMoviesFilter) {
 			localStorage.setItem("moviesFilter", newMoviesFilter)
-            console.log('Change moviesFilter in Storage', newMoviesFilter)
 		},
 	},
     methods: {
 		onMoviesFilterChange(event) {
-            // console.log('event target value filter change',event.target.value)
             this.$emit("moviesFilterChange", event.target.value)
             this.$emit('update:moviesFilter', event.target.value)
 		},
@@ -81,5 +79,4 @@ export default {
         font-size: 1rem;
     }
 }
-
 </style>

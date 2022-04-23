@@ -40,7 +40,6 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 40px 64px;
-    /*margin: 40px;*/
   }
 
   .character-card > div {
