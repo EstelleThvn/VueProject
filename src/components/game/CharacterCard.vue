@@ -1,31 +1,39 @@
 <template>
-  <div class="character-card">
+  <div v-if="showAnswer" class="character-card">
     <h1>{{characterData.name}}</h1>
-    <div>
-      <p>Race: </p>
-      <p>{{characterData.race}}</p>
+    <CharacterDetail detailName="Race" :detailInfo="characterData.race" />
+
+    <div v-show="showDetails" class="details-character">
+      <CharacterDetail detailName="Height" :detailInfo="characterData.height" />
+      <CharacterDetail detailName="Birth" :detailInfo="characterData.birth" />
+      <CharacterDetail detailName="Death" :detailInfo="characterData.death" />
     </div>
-    <div>
-      <p>Height: </p>
-      <p>{{characterData.height}}</p>
-    </div>
-    <div>
-      <p>Birth: </p>
-      <p>{{characterData.birth}}</p>
-    </div>
-    <div>
-      <p>Death: </p>
-      <p>{{characterData.death}}</p>
-    </div>
+
+    <DetailsButton :showDetails="showDetails" v-on:click.native="showDetails = !showDetails"/>
   </div>
+
+  
 </template>
 
 <script>
+import CharacterDetail from '@/components/game/CharacterDetail.vue'
+import DetailsButton from '@/components/common/DetailsButton.vue'
+
 export default {
   name: 'CharacterCard',
+  components: {
+        CharacterDetail,
+        DetailsButton,
+  },
   props: {
       characterData: [],
-  }
+      showAnswer: Boolean,
+  },
+  data() {
+      return {
+        showDetails: false,
+      }
+  },
 }
 </script>
 
@@ -40,24 +48,12 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 40px 64px;
+    
   }
 
-  .character-card > div {
-    display: flex;
-    justify-content: space-between;
+  .details-character {
     width: 100%;
-    margin: 6px 0;
-  }
-
-  .character-card > div p:first-child{
-    color: #9F9FAA;
-    margin-right: 16px;
-  }
-  .character-card > div p:last-child{
-    text-align: right;
-    text-overflow: ellipsis;
-    overflow: hidden; 
-    white-space: nowrap;
+    transition: .2s ease;
   }
 
   h1{

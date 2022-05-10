@@ -6,9 +6,8 @@
             <h3 class="quote">"{{this.chosenQuote.dialog}}"</h3>
 
             <Choices v-show="!showAnswer" :allChosenCharacters="allChosenCharacters" :chosenCharacter="chosenCharacter" :playerClicked.sync="playerClicked" v-on:updateScores="updateScores" :showAnswer.sync="showAnswer" />
-            <!-- use of v-if instead of v-show for the answer so that we can't see the name of the correct character in the code before answering -->
-            <div v-if="showAnswer" class="answer">
-                <CharacterCard :characterData="chosenCharacter" />
+            <div v-show="showAnswer" class="answer">
+                <CharacterCard :characterData="chosenCharacter" :showAnswer="showAnswer"/>
                 <Button @click.native="newQuotePartyOnNextQuote" text="next quote" class="next-btn" />
             </div>
 
