@@ -62,7 +62,6 @@ export default {
   top: 50%;
   right: -24px;
   transform: translate(100%, -50%);
-  /*display: none;*/
   opacity:0;
   transition: 0.2s ease;
   pointer-events: none;

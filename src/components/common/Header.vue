@@ -32,57 +32,57 @@
 </script>
 
 <style scoped>
-    header {
-        background-color: var(--light-color);
-        box-shadow: 0px 0px 32px rgba(100,104,140,.32);
-        padding: 8px 24px;
-        padding-right:40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: fixed;
-        z-index: 1;
-        width: 100%;
-    }
+header {
+    background-color: var(--light-color);
+    box-shadow: 0px 0px 32px rgba(100,104,140,.32);
+    padding: 8px 24px;
+    padding-right:40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+}
 
-    .links{
-        display: flex;
-        align-items: center;
-    }
-    .links a {
-        color: var(--secondary-color);
-        padding: 8px 16px;
-        height: 100%;
-        width: fit-content;
-        transition:0.2s ease;
-        margin: 0 8px;
-    }
-    .links a p {
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    .links a:first-child {
-        margin-left: 0;
-    }
-    .links a:last-child  {
-        margin-right: 0;
-    }
-    .links a:hover{
-        background-color: rgba(100, 104, 140,0.20);
-    }
+.links{
+    display: flex;
+    align-items: center;
+}
+.links a {
+    color: var(--secondary-color);
+    padding: 8px 16px;
+    height: 100%;
+    width: fit-content;
+    transition:0.2s ease;
+    margin: 0 8px;
+}
+.links a p {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.links a:first-child {
+    margin-left: 0;
+}
+.links a:last-child  {
+    margin-right: 0;
+}
+.links a:hover{
+    background-color: rgba(100, 104, 140,0.20);
+}
 
-    .home-btn{
-        display: flex;
-        align-items: center;
-    }
-    .home-btn p {
-        margin-left: 8px;
-    }
-    .home-btn img{
-        height: 40px;
-    }
+.home-btn{
+    display: flex;
+    align-items: center;
+}
+.home-btn p {
+    margin-left: 8px;
+}
+.home-btn img{
+    height: 40px;
+}
 
-    .filter-movies {
+.filter-movies {
     display:flex;
     align-items: center;
 }

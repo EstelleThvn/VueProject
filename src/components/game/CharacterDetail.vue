@@ -26,10 +26,10 @@ div {
 div p:first-child{
     color: #9F9FAA;
     margin-right: 16px;
-  }
+}
 div p:last-child{
     text-align: right;
     text-overflow: ellipsis;
     overflow: hidden;
-  }
+}
 </style>

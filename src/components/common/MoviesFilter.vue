@@ -34,7 +34,7 @@ export default {
 
 
 <style scoped>
-     .filter-movies {
+.filter-movies {
     display:flex;
     align-items: center;
 }

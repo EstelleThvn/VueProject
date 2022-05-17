@@ -18,7 +18,6 @@
 <style scoped>
     footer{
         background-color: var(--primary-color);
-        /*height: 120px;*/
         color: var(--light-color);
         display: flex;
         justify-content: space-between;

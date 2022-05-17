@@ -12,7 +12,6 @@
     <DetailsButton :showDetails="showDetails" v-on:click.native="showDetails = !showDetails"/>
   </div>
 
-  
 </template>
 
 <script>
@@ -41,14 +40,14 @@ export default {
 <style scoped>
   .character-card {
     background-color: var(--light-color);
-    box-shadow: 0px 0px 32px rgba(100,104,140,.32);
+    box-shadow: 0px 0px 32px rgba(100, 104, 140, .32);
     width: 100%;
     max-width: 440px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 40px 64px;
-    
+
   }
 
   .details-character {
@@ -56,7 +55,7 @@ export default {
     transition: .2s ease;
   }
 
-  h1{
+  h1 {
     text-align: center;
     margin-bottom: 16px;
     text-transform: capitalize;
@@ -64,11 +63,10 @@ export default {
     line-height: 3.25rem;
   }
 
-
 /* ------------- */
 /* MEDIA QUERIES */
 /* ------------- */
-  @media (max-width: 575.98px) {
+@media (max-width: 575.98px) {
     .character-card {
       padding: 24px 40px;
     }
